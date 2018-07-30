@@ -10,8 +10,11 @@ const request = requestFactory({
   cheerio: true,
   json: false,
   jar: true,
-  debug: true
+  debug: false
 })
+
+const moment = require('moment')
+moment.locale('fr')
 
 const baseUrl = 'https://www.wanimo.com/fr/compte'
 const loginUrl = baseUrl + '/identification'
@@ -47,13 +50,13 @@ async function authenticate(username, password) {
         'sign_in_by_email[password]': password,
         'sign_in_by_email[_token]': token
       }
-     },
-    // the validate function will check if
+    },
+    // the validate function will check if logout link is present
     validate: (statusCode, $) => {
       if ($('a[href$="/fr/compte/deconnexion"]').length > 1) {
         return true
       } else {
-        log('error', $('.warning').text())
+        log('error', $('.warning.displayBlock').text())
         return false
       }
     }
@@ -66,22 +69,23 @@ function parseBills($) {
     {
       id: {
         sel: '.commande',
-        parse: id => id.replace("Commande N°", "").trim()
+        parse: id => id.replace('Commande N°', '').trim()
       },
       date: {
         sel: '.date',
-        parse: date => moment(date, 'DD/MM/YYYY')
+        parse: date => moment(date, 'DD/MM/YYYY').add(moment().utcOffset(), 'm')
       },
       amount: {
         sel: '.price :nth-child(2)',
         parse: normalizePrice
       },
-      fileUrl: {
+      fileurl: {
         sel: '.actions :nth-child(2) a',
-        attr: 'href',
+        attr: 'href'
       }
     },
-  '.orders-table .row')
+    '.orders-table .row'
+  )
 
   return bills.map(bill => ({
     ...bill,
@@ -99,7 +103,7 @@ function parseBills($) {
 
 // convert a price string to a float
 function normalizePrice(price) {
-  return parseFloat(amount.replace('€', '')
+  return parseFloat(price.replace('€', '')
                           .trim()
                           .replace(',', '.'))
 }
