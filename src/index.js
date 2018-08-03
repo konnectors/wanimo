@@ -1,3 +1,9 @@
+// Force sentry DSN into environment variables
+// In the future, will be set by the stack
+process.env.SENTRY_DSN =
+  process.env.SENTRY_DSN ||
+  'https://94b236807165411dad957bc687e1b4e4:e9c98c9409ed4ccbb7eae3e628807f5e@sentry.cozycloud.cc/87'
+
 const {
   BaseKonnector,
   requestFactory,
@@ -89,8 +95,10 @@ function parseBills($) {
 
   return bills.map(bill => ({
     ...bill,
-    filename: `${bill.date.format('YYYY-MM-DD')}_${String(bill.amount)
-      .replace('.', ',')}€.pdf`,
+    filename: `${bill.date.format('YYYY-MM-DD')}_${String(bill.amount).replace(
+      '.',
+      ','
+    )}€.pdf`,
     date: bill.date.toDate(),
     currency: '€',
     vendor: 'wanimo',
@@ -103,7 +111,10 @@ function parseBills($) {
 
 // convert a price string to a float
 function normalizePrice(price) {
-  return parseFloat(price.replace('€', '')
-                          .trim()
-                          .replace(',', '.'))
+  return parseFloat(
+    price
+      .replace('€', '')
+      .trim()
+      .replace(',', '.')
+  )
 }

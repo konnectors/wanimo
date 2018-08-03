@@ -5,9 +5,8 @@ env:
   global:
   - GH_USER_EMAIL="travis@example.org"
   - GH_USER_NAME="cozy-bot"
-  - DEPLOY_REPOSITORY="git@github.com:konnectors/cozy-konnector-template.git"
-  # Token to access Cozy Registry, you should replace it with a token specific to this konnector
-  - secure: CQ44ZVjPAIVRvGgMcduSAX4VmaOrzF3nrJXPFUsNQ2tMVVdaAlI1zTNkdfntqigZgz6Mpk9x+2FcA8qrkNzQ4cW0lPP9f5dBtSH1xetfpXDFKprW4bqzmhgXSXJFTOYxkChOBPmCYJr+Vv4XqDkv/dBEPdfRSgvVyd5YxHSd5HBU91rKyR+Hox7LTnhmlXleLIs11EQgp7RK+L28MBCtCqAa2niFlKKRlqupm2FSpZzxCh9qeY0wKCQzPE+QZUm4waJ1SUGKQwbzAfyOxu2O6rwzaTSknfdJoSX6AMxjRTWBC9c3VfUGM3wjVJIqMhiUj2FQhVIjiDyX/W60/q3UMC5WYzSvEDDfhnKCPwiUKSU7HvSxx9q2YP34evxKo7KPahz9zLlQZvW+GBMyI9hbMDBTALuQVVzhftsvqfrogyYhkEPviiYiVADWNxhacsbUjRA5svXnZvtmCPo7fLFwel/krgC5Z8AwAY0YxWjSHNVScUkieSDCrlxrC09vTtG60unt9gtXbD5ruUkDLWSUwHBv2p0WY1TdP+2Vlf3yYfBvEVbqi59AxG+T17bq7Xv3QZnkrwC+UOCNCeg+gHPv+fRpUaYWzCO4uaoY/nlJa7RulQFhGca3A//6xRo/KgWw9JJnOXJelNjE9oHCUu9xShotUZKOF+O93V/BRqs9ITo=
+  - DEPLOY_REPOSITORY="git@github.com:konnectors/wanimo.git"
+  - secure: Ds2EDZ4LKlRIX5mujD9eF6/LYO2CQPSQbZFQ4JPH1fl30Dqf7wqFM2XOZdQC6HlAhxu4z1ZL7IJg4tC7TsUgdgOYKryzAKbqMdMiJRRPcZUq6YPynAV1UKXzw8MM1MaMNa/NZDsBM+ej/V4v1f4ruvckn4fxA99YLgn4nrtszgbqVqRMYdNbHmQo9zMryGVXdosaP0vX7WSWGPU1x6odOCa2yVf3oiXhnJijy0TFWBYxYQpbs57Yx2K7xq+GF+RNhlk2lrMOTRdIK4DDvXP17O1BxVO1hrejevl9dSJ6+bz2psPPi6uFEg0m4dMkaFW/0hrDlur3nvYjo2KZW04PD+GaxgrhCEUvsw5G5uC+FlVuUQmDAJxzrdnqZl/llA+y8FixRCs4JOdBui1LwDqolpne94Md5h1rWSbCgeRaXZLBbjmFWPKOTTNi2da57T/zP7tvEJx8Cem5aQ9XDlo30jjCSErgua3Hvh2OR8dxPcccXo6i92evXF7rPRjrUjoKv2WmCbsNK7JEnfSV5L6Vr9+kVQpR0xwO1eS7IfaJqS7JHkwMpQ28KrxIgaYouOxOPuA4/8oU+KbUTYHtwo61S1Q8pxDGXXnlnaG35T7qU4WRl7lDBKLalhvtwRoUdyNsftunvlxlASWpnzSGX4jClydcPc2DLx60bjvQal7GZSY=
 cache:
   yarn: true
   directories:
@@ -15,11 +14,10 @@ cache:
 branches:
   except:
   - build
-  - latest
+  - build-debug
 script:
 - yarn lint
 - yarn build
-- yarn run check
 deploy:
 - provider: script
   skip-cleanup: true
@@ -32,9 +30,8 @@ deploy:
   on:
     tags: true
 before_install:
-# run the yarn travisDeployKey command to genrate this
-# - openssl aes-256-cbc -K $encrypted_0b21ecdcf920_key -iv $encrypted_0b21ecdcf920_iv
-#   -in github_deploy_key.enc -out /tmp/github_deploy_key -d
+- openssl aes-256-cbc -K $encrypted_88e6b096c805_key -iv $encrypted_88e6b096c805_iv
+  -in github_deploy_key.enc -out /tmp/github_deploy_key -d
 - eval "$(ssh-agent -s)"
 - chmod 600 /tmp/github_deploy_key
 - ssh-add /tmp/github_deploy_key
