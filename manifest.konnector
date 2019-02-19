@@ -92,5 +92,6 @@
       }
     }
   },
+  "banksTransactionRegExp": "\\bwanimo\\b",
   "manifest_version": "2"
 }
